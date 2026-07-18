@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="result-card">
+
+    {% if is_approved %}
+        <div class="success-icon">✅</div>
+        <h1 class="approved">APPROVED</h1>
+    {% else %}
+        <div class="fail-icon">❌</div>
+        <h1 class="rejected">REJECTED</h1>
+    {% endif %}
+
+    <hr class="result-divider">
+
+    <div class="result-row">
+        <div class="metric-block" style="width:100%;">
+            <h3>Confidence Score</h3>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ confidence }}%;">{{ confidence }}%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-row">
+        <div class="metric-block">
+            <h3>Risk Level</h3>
+            <span class="risk-badge {{ risk_class }}">{{ risk_level }}</span>
+        </div>
+    </div>
+
+    <hr class="result-divider">
+
+    <h3>Application Summary</h3>
+    <ul class="summary-grid">
+        <li><span>Age</span><span>{{ summary.age }} years</span></li>
+        <li><span>Income</span><span>₹{{ "{:,}".format(summary.income) }}</span></li>
+        <li><span>Credit History</span><span>{{ summary.credit_history_months }} months</span></li>
+        <li><span>Employment</span><span>{{ summary.employment_years }} years</span></li>
+    </ul>
+
+    <div class="result-actions">
+        <a href="/predictpage"><button class="predict-btn">Predict Again</button></a>
+        <a href="/"><button class="btn-secondary" type="button">Back to Dashboard</button></a>
+        <a href="/download/{{ pred_id }}"><button class="btn-secondary" type="button">⬇ Download PDF</button></a>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Prediction History</h1>
+<p>All predictions made using this app, stored locally.</p>
+
+<div class="history-toolbar">
+
+    <div class="filter-group">
+        <a class="filter-btn {{ 'active' if current_filter == 'all' else '' }}"
+           href="/history?filter=all{{ '&q=' + q if q else '' }}">All</a>
+        <a class="filter-btn {{ 'active' if current_filter == 'Approved' else '' }}"
+           href="/history?filter=Approved{{ '&q=' + q if q else '' }}">Approved</a>
+        <a class="filter-btn {{ 'active' if current_filter == 'Rejected' else '' }}"
+           href="/history?filter=Rejected{{ '&q=' + q if q else '' }}">Rejected</a>
+    </div>
+
+    <form class="search-box" action="/history" method="GET">
+        <input type="hidden" name="filter" value="{{ current_filter }}">
+        <input type="text" name="q" placeholder="Search by date or result..." value="{{ q or '' }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <a class="download-link" href="/history/csv?filter={{ current_filter }}{{ '&q=' + q if q else '' }}">⬇ Export CSV</a>
+
+</div>
+
+{% if predictions %}
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Result</th>
+        <th>Confidence</th>
+        <th>Risk Level</th>
+        <th>Age</th>
+        <th>Income</th>
+    </tr>
+    {% for p in predictions %}
+    <tr>
+        <td>{{ p.timestamp[:16].replace('T', ' ') }}</td>
+        <td><span class="pill {{ 'approved' if p.result == 'Approved' else 'rejected' }}">{{ p.result }}</span></td>
+        <td>{{ p.confidence }}%</td>
+        <td>{{ p.risk_level }}</td>
+        <td>{{ p.age }}</td>
+        <td>₹{{ "{:,}".format(p.income|int) if p.income else '-' }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<div class="empty-state">
+    <p>No predictions found{{ ' for "' + q + '"' if q else '' }}.</p>
+    <a href="/predictpage"><button class="predict-btn">Make a Prediction</button></a>
+</div>
+{% endif %}
+
+{% endblock %}

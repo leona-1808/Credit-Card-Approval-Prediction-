@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 style="text-align:center;">Credit Card Approval Prediction System</h1>
+
+<p style="text-align:center;font-size:18px;">
+An AI-powered machine learning system that predicts whether a customer is eligible for credit card approval based on financial and personal information.
+</p>
+
+<!-- ============ Project Overview (static, from training) ============ -->
+<div class="stat-strip">
+
+    <div class="card">
+        <h2>Random Forest + SMOTE</h2>
+        <h3>96.48%</h3>
+        <p>Final Model Accuracy</p>
+    </div>
+
+    <div class="card">
+        <h2>Dataset Size</h2>
+        <h3>777,715</h3>
+        <p>Merged Records</p>
+    </div>
+
+    <div class="card">
+        <h2>Features Used</h2>
+        <h3>18</h3>
+        <p>Input Features</p>
+    </div>
+
+</div>
+
+<br><br>
+
+<!-- ============ Live Statistics (from this app's own history) ============ -->
+<h2>Live Statistics</h2>
+<p style="font-size:14px;">Automatically updated from predictions made on this app.</p>
+
+<div class="stat-strip live">
+
+    <div class="card">
+        <h2>Total Predictions</h2>
+        <h3>{{ stats.total }}</h3>
+        <p>All time</p>
+    </div>
+
+    <div class="card approved">
+        <h2>Approved</h2>
+        <h3>{{ stats.approved }}</h3>
+        <p>{{ stats.approved_pct }}% of total</p>
+    </div>
+
+    <div class="card rejected">
+        <h2>Rejected</h2>
+        <h3>{{ stats.rejected }}</h3>
+        <p>{{ stats.rejected_pct }}% of total</p>
+    </div>
+
+    <div class="card avg">
+        <h2>Avg Confidence</h2>
+        <h3>{{ stats.avg_confidence }}%</h3>
+        <p>Across all predictions</p>
+    </div>
+
+</div>
+
+<br><br>
+
+{% if stats.total > 0 %}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+
+    <div class="chart-block">
+        <h3>Approved vs Rejected</h3>
+        <div class="hbar-row">
+            <span class="hbar-label">Approved</span>
+            <div class="hbar-track"><div class="hbar-fill approved" style="width:{{ stats.approved_pct }}%;"></div></div>
+            <span class="hbar-value">{{ stats.approved_pct }}%</span>
+        </div>
+        <div class="hbar-row">
+            <span class="hbar-label">Rejected</span>
+            <div class="hbar-track"><div class="hbar-fill rejected" style="width:{{ stats.rejected_pct }}%;"></div></div>
+            <span class="hbar-value">{{ stats.rejected_pct }}%</span>
+        </div>
+    </div>
+
+    <div class="chart-block">
+        <h3>Predictions This Week</h3>
+        <div class="vbar-chart">
+            {% for row in weekly %}
+            <div class="vbar-col">
+                <div class="vbar" style="height: {{ (row.count / weekly_max * 100) if weekly_max > 0 else 0 }}%;"></div>
+                <span class="vbar-day">{{ row.day }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<br><br>
+{% endif %}
+
+<!-- ============ Model Comparison (static, from training) ============ -->
+<h2>Model Comparison</h2>
+
+<table>
+
+<tr>
+    <th>Model</th>
+    <th>Accuracy</th>
+    <th>Recall (Class 0)</th>
+    <th>Status</th>
+</tr>
+
+<tr class="winner">
+    <td>Random Forest + SMOTE</td>
+    <td>96.48%</td>
+    <td>56%</td>
+    <td>🏆 Final Model</td>
+</tr>
+
+<tr>
+    <td>Random Forest</td>
+    <td>98.68%</td>
+    <td>39%</td>
+    <td>Evaluated</td>
+</tr>
+
+<tr>
+    <td>Decision Tree</td>
+    <td>98.28%</td>
+    <td>43%</td>
+    <td>Evaluated</td>
+</tr>
+
+<tr>
+    <td>Logistic Regression</td>
+    <td>98.53%</td>
+    <td>0%</td>
+    <td>Evaluated</td>
+</tr>
+
+</table>
+
+<br><br>
+
+<!-- ============ Recent Predictions ============ -->
+<h2>Recent Predictions</h2>
+
+<div class="chart-block" style="padding:6px 26px;">
+{% if recent %}
+    <ul class="recent-list">
+        {% for p in recent %}
+        <li class="recent-item">
+            <span class="recent-tag {{ 'approved' if p.result == 'Approved' else 'rejected' }}">
+                {{ '✔' if p.result == 'Approved' else '✖' }} {{ p.result }}
+            </span>
+            <span class="recent-conf">{{ p.confidence }}%</span>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p style="padding:20px 0;">No predictions yet — try the prediction form to see results appear here.</p>
+{% endif %}
+</div>
+
+<div style="text-align:right;margin-top:8px;">
+    <a href="/history" style="font-size:13.5px;color:var(--navy);font-weight:600;">View full history →</a>
+</div>
+
+<br><br>
+
+<!-- ============ How It Works ============ -->
+<h2>How It Works</h2>
+
+<div class="how-it-works">
+    <div class="how-step"><b>1</b>User enters details</div>
+    <div class="how-arrow">→</div>
+    <div class="how-step"><b>2</b>Data preprocessing</div>
+    <div class="how-arrow">→</div>
+    <div class="how-step"><b>3</b>Random Forest predicts approval</div>
+    <div class="how-arrow">→</div>
+    <div class="how-step"><b>4</b>Confidence score displayed</div>
+</div>
+
+<br><br>
+
+<div style="text-align:center;">
+
+<a href="/predictpage">
+<button class="predict-btn">
+Start Prediction →
+</button>
+</a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 style="text-align:center;margin-bottom:35px;">
+Credit Card Approval Prediction
+</h1>
+
+<form action="/predict" method="POST">
+
+<div class="form-grid">
+
+    <!-- Personal -->
+    <div class="form-section">
+
+        <h2>👤 Personal Information</h2>
+
+        <label>Gender</label>
+        <select name="CODE_GENDER">
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select>
+
+        <label>Age</label>
+        <input type="number" name="AGE" required>
+
+        <label>Family Status</label>
+        <select name="NAME_FAMILY_STATUS">
+            <option value="0">Civil Marriage</option>
+            <option value="1">Married</option>
+            <option value="2">Separated</option>
+            <option value="3">Single / Not Married</option>
+            <option value="4">Widow</option>
+        </select>
+
+        <label>Children</label>
+        <input type="number" name="CNT_CHILDREN" value="0">
+
+    </div>
+
+    <!-- Employment -->
+    <div class="form-section">
+
+        <h2>💼 Employment Details</h2>
+
+        <label>Annual Income</label>
+        <input type="number" name="AMT_INCOME_TOTAL" required>
+
+        <label>Income Type</label>
+        <select name="NAME_INCOME_TYPE">
+            <option value="0">Commercial Associate</option>
+            <option value="1">Pensioner</option>
+            <option value="2">State Servant</option>
+            <option value="3">Student</option>
+            <option value="4">Working</option>
+        </select>
+
+        <label>Years Employed</label>
+        <input type="number" name="EMPLOYMENT_YEARS" required>
+
+    </div>
+
+    <!-- Property -->
+    <div class="form-section">
+
+        <h2>🏠 Property Information</h2>
+
+        <label>Own Car</label>
+        <select name="FLAG_OWN_CAR">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <label>Own House</label>
+        <select name="FLAG_OWN_REALTY">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <label>Housing Type</label>
+        <select name="NAME_HOUSING_TYPE">
+            <option value="0">Co-op Apartment</option>
+            <option value="1">House / Apartment</option>
+            <option value="2">Municipal Apartment</option>
+            <option value="3">Office Apartment</option>
+            <option value="4">Rented Apartment</option>
+            <option value="5">With Parents</option>
+        </select>
+
+    </div>
+
+    <!-- Contact -->
+    <div class="form-section">
+
+        <h2>📞 Contact Information</h2>
+
+        <label>Work Phone</label>
+        <select name="FLAG_WORK_PHONE">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <label>Phone</label>
+        <select name="FLAG_PHONE">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+    </div>
+
+    <!-- Credit -->
+    <div class="form-section">
+
+        <h2>💳 Credit Information</h2>
+
+        <label>Credit History (Months)</label>
+        <input type="number"
+               name="CREDIT_HISTORY_MONTHS"
+               min="0"
+               required>
+
+    </div>
+
+</div>
+
+<!-- BUTTON -->
+<div class="button-container">
+
+    <input
+        type="submit"
+        value="Predict Credit Approval"
+        class="submit-btn">
+
+</div>
+
+</form>
+
+{% endblock %}
