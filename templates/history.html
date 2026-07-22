@@ -35,6 +35,9 @@
         <th>Risk Level</th>
         <th>Age</th>
         <th>Income</th>
+        <th>Gender</th>
+        <th>Family Status</th>
+        <th>Housing</th>
     </tr>
     {% for p in predictions %}
     <tr>
@@ -44,6 +47,9 @@
         <td>{{ p.risk_level }}</td>
         <td>{{ p.age }}</td>
         <td>₹{{ "{:,}".format(p.income|int) if p.income else '-' }}</td>
+        <td>{{ p.gender or '-' }}</td>
+        <td>{{ p.family_status or '-' }}</td>
+        <td>{{ p.housing_type or '-' }}</td>
     </tr>
     {% endfor %}
 </table>
