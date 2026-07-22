@@ -109,6 +109,15 @@ def predict():
         income=income,
         employment_years=employment_years,
         credit_history_months=credit_history,
+        gender=int(request.form["CODE_GENDER"]),
+        own_car=int(request.form["FLAG_OWN_CAR"]),
+        own_realty=int(request.form["FLAG_OWN_REALTY"]),
+        children=int(request.form["CNT_CHILDREN"]),
+        income_type=int(request.form["NAME_INCOME_TYPE"]),
+        family_status=int(request.form["NAME_FAMILY_STATUS"]),
+        housing_type=int(request.form["NAME_HOUSING_TYPE"]),
+        work_phone=int(request.form["FLAG_WORK_PHONE"]),
+        phone=int(request.form["FLAG_PHONE"]),
     )
 
     level, emoji = db.risk_level(confidence)
@@ -161,11 +170,19 @@ def history_csv():
 
     buffer = io.StringIO()
     writer = csv.writer(buffer)
-    writer.writerow(["ID", "Date", "Result", "Confidence", "Risk Level", "Age", "Income", "Employment Years", "Credit History (Months)"])
+    writer.writerow([
+        "ID", "Date", "Result", "Confidence", "Risk Level", "Age", "Income",
+        "Employment Years", "Credit History (Months)", "Gender", "Own Car",
+        "Own Realty", "Children", "Income Type", "Family Status",
+        "Housing Type", "Work Phone", "Phone",
+    ])
     for p in predictions:
         writer.writerow([
             p["id"], p["timestamp"], p["result"], p["confidence"], p["risk_level"],
             p["age"], p["income"], p["employment_years"], p["credit_history_months"],
+            p.get("gender"), p.get("own_car"), p.get("own_realty"), p.get("children"),
+            p.get("income_type"), p.get("family_status"), p.get("housing_type"),
+            p.get("work_phone"), p.get("phone"),
         ])
 
     return Response(
