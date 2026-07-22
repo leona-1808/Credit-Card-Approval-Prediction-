@@ -130,6 +130,15 @@ for i in range(N):
         employment_years=applicant["EMPLOYMENT_YEARS"],
         credit_history_months=applicant["CREDIT_HISTORY_MONTHS"],
         timestamp=random_time.isoformat(timespec="seconds"),
+        gender=applicant["CODE_GENDER"],
+        own_car=applicant["FLAG_OWN_CAR"],
+        own_realty=applicant["FLAG_OWN_REALTY"],
+        children=applicant["CNT_CHILDREN"],
+        income_type=applicant["NAME_INCOME_TYPE"],
+        family_status=applicant["NAME_FAMILY_STATUS"],
+        housing_type=applicant["NAME_HOUSING_TYPE"],
+        work_phone=applicant["FLAG_WORK_PHONE"],
+        phone=applicant["FLAG_PHONE"],
     )
 
     if (i + 1) % 10 == 0:
