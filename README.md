@@ -42,11 +42,15 @@ Four classifiers were trained. The winner isn't the one you'd guess by accuracy 
 | Model | Accuracy | Recall (minority class) | |
 |---|:---:|:---:|---|
 | Logistic Regression | 98.53% | **0%** | 🚩 predicted majority class *every single time* |
-| Decision Tree | 98.28% | 43% | |
+| Decision Tree | 98.28% | 43% | a single tree — prone to overfitting |
 | Random Forest | **98.68%** ⭐ highest accuracy | 39% | still misses 6 in 10 real risk cases |
 | **Random Forest + SMOTE** | 96.48% | **56%** | ✅ **shipped to production** |
 
 **Why the "worse" model won:** with a ~67:1 class imbalance, a model can score 98%+ accuracy while being *functionally useless* — exactly what Logistic Regression did. Recall on the minority class (how many genuinely high-risk applicants actually get caught) is the metric that matters for a credit-risk system. Random Forest + SMOTE trades a small amount of accuracy for a real, meaningful jump in catching high-risk applicants.
+
+<div align="center">
+<img src="./assets/model_comparison.png" alt="Model comparison chart: accuracy vs recall across four models" width="700">
+</div>
 
 <details>
 <summary><b>📦 There's also a size-vs-accuracy story — click to expand</b></summary>
