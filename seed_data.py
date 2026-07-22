@@ -30,24 +30,45 @@ db.init_db()
 
 
 def random_applicant():
-    """Generates one plausible (not real) applicant profile."""
+    """Generates one plausible (not real) applicant profile.
+
+    ~70% are 'typical' applicants (original balanced distribution).
+    ~30% are deliberately weaker profiles — low income, little/no
+    employment history, thin credit history, more dependents — so the
+    model sees a realistic mix of strong and risky applicants instead
+    of everyone looking similarly qualified. The model still makes
+    every decision itself; this only changes who's being evaluated.
+    """
+    is_weak_profile = random.random() < 0.30
+
     gender = random.choice([0, 1])
-    own_car = random.choice([0, 1])
-    own_realty = random.choice([0, 1])
-    children = random.choices([0, 1, 2, 3], weights=[60, 25, 10, 5])[0]
-    age = random.randint(21, 65)
-    income = round(random.choice([
-        random.uniform(150000, 400000),   # lower income band
-        random.uniform(400000, 900000),   # mid income band
-        random.uniform(900000, 2500000),  # high income band
-    ]), 2)
-    income_type = random.choices([0, 1, 2, 3, 4], weights=[25, 10, 15, 5, 45])[0]  # weighted toward "Working"
-    family_status = random.choices([0, 1, 2, 3, 4], weights=[10, 45, 10, 30, 5])[0]
-    housing_type = random.choices([0, 1, 2, 3, 4, 5], weights=[5, 65, 5, 5, 10, 10])[0]
-    employment_years = random.randint(0, 30)
+    own_car = random.choices([0, 1], weights=[70, 30] if is_weak_profile else [40, 60])[0]
+    own_realty = random.choices([0, 1], weights=[65, 35] if is_weak_profile else [35, 65])[0]
+
+    if is_weak_profile:
+        children = random.choices([0, 1, 2, 3, 4], weights=[15, 20, 25, 25, 15])[0]
+        age = random.randint(21, 35)  # younger, less established
+        income = round(random.uniform(80000, 220000), 2)  # low income band
+        income_type = random.choices([0, 1, 2, 3, 4], weights=[15, 5, 10, 25, 45])[0]  # more students
+        family_status = random.choices([0, 1, 2, 3, 4], weights=[15, 25, 20, 35, 5])[0]  # more separated/single
+        housing_type = random.choices([0, 1, 2, 3, 4, 5], weights=[5, 25, 10, 5, 30, 25])[0]  # more rented/with parents
+        employment_years = random.randint(0, 2)  # little to no work history
+        credit_history_months = random.randint(0, 6)  # thin credit file
+    else:
+        children = random.choices([0, 1, 2, 3], weights=[60, 25, 10, 5])[0]
+        age = random.randint(21, 65)
+        income = round(random.choice([
+            random.uniform(300000, 600000),   # mid income band
+            random.uniform(600000, 2500000),  # high income band
+        ]), 2)
+        income_type = random.choices([0, 1, 2, 3, 4], weights=[25, 10, 15, 2, 48])[0]
+        family_status = random.choices([0, 1, 2, 3, 4], weights=[10, 50, 8, 27, 5])[0]
+        housing_type = random.choices([0, 1, 2, 3, 4, 5], weights=[5, 70, 5, 5, 8, 7])[0]
+        employment_years = random.randint(2, 30)
+        credit_history_months = random.randint(6, 60)
+
     work_phone = random.choice([0, 1])
     phone = random.choice([0, 1])
-    credit_history_months = random.randint(0, 60)
 
     return {
         "CODE_GENDER": gender,
@@ -130,6 +151,15 @@ for i in range(N):
         employment_years=applicant["EMPLOYMENT_YEARS"],
         credit_history_months=applicant["CREDIT_HISTORY_MONTHS"],
         timestamp=random_time.isoformat(timespec="seconds"),
+        gender=applicant["CODE_GENDER"],
+        own_car=applicant["FLAG_OWN_CAR"],
+        own_realty=applicant["FLAG_OWN_REALTY"],
+        children=applicant["CNT_CHILDREN"],
+        income_type=applicant["NAME_INCOME_TYPE"],
+        family_status=applicant["NAME_FAMILY_STATUS"],
+        housing_type=applicant["NAME_HOUSING_TYPE"],
+        work_phone=applicant["FLAG_WORK_PHONE"],
+        phone=applicant["FLAG_PHONE"],
     )
 
     if (i + 1) % 10 == 0:
