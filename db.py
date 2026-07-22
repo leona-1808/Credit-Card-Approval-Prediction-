@@ -50,15 +50,16 @@ def risk_level(confidence):
         return "High Risk", "🔴"
 
 
-def insert_prediction(result, confidence, age, income, employment_years, credit_history_months):
+def insert_prediction(result, confidence, age, income, employment_years, credit_history_months, timestamp=None):
     level, emoji = risk_level(confidence)
+    ts = timestamp if timestamp is not None else datetime.now().isoformat(timespec="seconds")
     with get_conn() as conn:
         cur = conn.execute(
             """INSERT INTO predictions
                (timestamp, result, confidence, risk_level, age, income, employment_years, credit_history_months)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
             (
-                datetime.now().isoformat(timespec="seconds"),
+                ts,
                 result,
                 confidence,
                 f"{emoji} {level}",
