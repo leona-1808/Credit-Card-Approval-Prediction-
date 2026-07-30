@@ -48,10 +48,25 @@ def predictpage():
 def predict():
 
     age = int(request.form["AGE"])
-    days_birth = -(age * 365)
+    days_birth = age * 365  # positive — matches the .abs() transform applied
+                             # to DAYS_BIRTH during training (notebook cell 20)
 
     employment_years = int(request.form["EMPLOYMENT_YEARS"])
-    days_employed = -(employment_years * 365)
+    income_type = int(request.form["NAME_INCOME_TYPE"])
+
+    # The training dataset encodes "not currently employed" (pensioners,
+    # unemployed applicants) using a special sentinel value, 365243,
+    # for DAYS_EMPLOYED — rather than a small day count. Real pensioner
+    # rows in the training data almost universally carry this exact
+    # value, so we replicate it here; otherwise a pensioner with 0
+    # years employment would look to the model like someone who
+    # started a job today, not like a retiree, since the model never
+    # saw that combination during training.
+    PENSIONER_INCOME_TYPE = 1  # matches predict.html's Pensioner option
+    if income_type == PENSIONER_INCOME_TYPE and employment_years == 0:
+        days_employed = 365243
+    else:
+        days_employed = employment_years * 365  # positive — matches training
 
     credit_history = int(request.form["CREDIT_HISTORY_MONTHS"])
     months_balance = -credit_history
@@ -59,8 +74,6 @@ def predict():
     income = float(request.form["AMT_INCOME_TOTAL"])
 
     features = [
-        0,      # ID
-
         float(request.form["CODE_GENDER"]),
         float(request.form["FLAG_OWN_CAR"]),
         float(request.form["FLAG_OWN_REALTY"]),
